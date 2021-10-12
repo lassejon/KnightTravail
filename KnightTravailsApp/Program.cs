@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Channels;
 
 namespace KnightTravailsApp
 {
@@ -6,7 +9,8 @@ namespace KnightTravailsApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var movesMade = Knight.Moves((3, 3), (4, 3));
+            movesMade.ForEach(move => Console.Write(move + ", "));
         }
     }
 }

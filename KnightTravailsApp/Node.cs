@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace KnightTravailsApp
 {
-    public class Knight
+    public class Node
     {
         private int Max { get; } = 7;
         private int Min { get; } = 0;
@@ -19,43 +19,25 @@ namespace KnightTravailsApp
             (2, -1)
         };
         
-        private (int, int) Position { get; set; }
-        private List<(int, int)> PossiblePositions { get; set; }
-        private (int, int) Parent { get; set; }
+        public (int, int) Position { get; set; }
+        public List<Node> PossiblePositions { get; set; }
+        public Node Parent { get; set; }
 
-        public Knight((int, int) position, (int, int) parent)
+        public Node((int, int) position, Node parent)
         {
             Position = position;
             Parent = parent;
-            PossiblePositions = CalculatePossiblePositions(position);
         }
-        
-        public List<(int, int)> KnightMoves((int, int) startingPosition, (int, int) endingPosition)
-        {
-            var moves = new List<(int, int)>();
-            var movesToMake = new Queue<(int, int)>();
-            var currentPosition = startingPosition;
-            while (currentPosition != endingPosition)
-            {
-                var possibleMoves = PossibleMoves(currentPosition);
-                foreach (var possibleMove in possibleMoves)
-                {
-                    movesToMake.Enqueue(possibleMove);
-                }
-                moves.Add(currentPosition);
-                currentPosition = movesToMake.Dequeue();
-            }
-            moves.Add(currentPosition);
 
-            return moves;
-        }
-        
-        private List<(int, int)> CalculatePossiblePositions((int, int) position)
+        public List<Node> CalculatePossiblePositions()
         {
-            var (item1, item2) = position;
+            var (item1, item2) = Position;
             var possiblePositions = Moves
-                .Select(move => (item1 + move.Item1, item2 + move.Item2))
-                .Where(move => move.Item1 >= Min && move.Item1 <= Max && move.Item2 >= Min && move.Item2 <= Max);
+                .Select(move => new Node((item1 + move.Item1, item2 + move.Item2), this))
+                .Where(move => move.Position.Item1 >= Min && 
+                               move.Position.Item1 <= Max && 
+                               move.Position.Item2 >= Min && 
+                               move.Position.Item2 <= Max);
             
             return possiblePositions.ToList();
         }
